@@ -1,0 +1,502 @@
+<Window x:Class="YoutubeDownloaderMVVM.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:conv="clr-namespace:YoutubeDownloaderMVVM.Converters"
+        xmlns:local="clr-namespace:YoutubeDownloaderMVVM"
+        mc:Ignorable="d"
+        Title="YouTube Downloader"
+        Height="820" Width="1180"
+        MinHeight="700" MinWidth="980"
+        WindowStartupLocation="CenterScreen"
+        Background="{DynamicResource AppBackgroundBrush}"
+        TextElement.Foreground="{DynamicResource TextPrimaryBrush}"
+        FontFamily="Segoe UI">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <materialDesign:BundledTheme BaseTheme="Light" PrimaryColor="Red" SecondaryColor="Red"/>
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesign2.Defaults.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <SolidColorBrush x:Key="AppBackgroundBrush" Color="#F7F7F8"/>
+            <SolidColorBrush x:Key="CardBrush" Color="#FFFFFF"/>
+            <SolidColorBrush x:Key="CardSubtleBrush" Color="#FAFAFA"/>
+            <SolidColorBrush x:Key="AccentBrush" Color="#FF0000"/>
+            <SolidColorBrush x:Key="AccentDarkBrush" Color="#D90000"/>
+            <SolidColorBrush x:Key="AccentSoftBrush" Color="#FFF0F0"/>
+            <SolidColorBrush x:Key="TextPrimaryBrush" Color="#18181B"/>
+            <SolidColorBrush x:Key="TextSecondaryBrush" Color="#71717A"/>
+            <SolidColorBrush x:Key="TextTertiaryBrush" Color="#A1A1AA"/>
+            <SolidColorBrush x:Key="BorderSoftBrush" Color="#E7E7EA"/>
+            <SolidColorBrush x:Key="InputBrush" Color="#FFFFFF"/>
+            <SolidColorBrush x:Key="ThumbnailBackgroundBrush" Color="#F1F1F2"/>
+            <SolidColorBrush x:Key="SuccessBrush" Color="#16A34A"/>
+            <SolidColorBrush x:Key="WarningBrush" Color="#D97706"/>
+            <SolidColorBrush x:Key="ErrorBrush" Color="#DC2626"/>
+
+            <conv:StringToVisibilityConverter x:Key="StringToVisibilityConverter"/>
+            <conv:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
+            <conv:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+            <conv:CountToVisibilityConverter x:Key="CountToVisibilityConverter"/>
+            <conv:StatusKindToBrushConverter x:Key="StatusKindToBrushConverter"/>
+            <conv:StatusKindToIconConverter x:Key="StatusKindToIconConverter"/>
+
+            <Style x:Key="Card" TargetType="Border">
+                <Setter Property="Background" Value="{DynamicResource CardBrush}"/>
+                <Setter Property="CornerRadius" Value="20"/>
+                <Setter Property="BorderBrush" Value="{DynamicResource BorderSoftBrush}"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="Padding" Value="22"/>
+            </Style>
+
+            <Style x:Key="Eyebrow" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="11"/>
+                <Setter Property="FontWeight" Value="SemiBold"/>
+                <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}"/>
+                <Setter Property="TextOptions.TextFormattingMode" Value="Display"/>
+            </Style>
+
+            <Style x:Key="SoftTextBox" TargetType="TextBox" BasedOn="{StaticResource MaterialDesignOutlinedTextBox}">
+                <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
+                <Setter Property="Background" Value="{DynamicResource InputBrush}"/>
+                <Setter Property="BorderBrush" Value="{DynamicResource BorderSoftBrush}"/>
+                <Setter Property="materialDesign:TextFieldAssist.TextFieldCornerRadius" Value="14"/>
+                <Setter Property="Height" Value="52"/>
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                <Setter Property="Padding" Value="14,0"/>
+            </Style>
+
+            <Style x:Key="SoftComboBox" TargetType="ComboBox" BasedOn="{StaticResource MaterialDesignOutlinedComboBox}">
+                <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
+                <Setter Property="Background" Value="{DynamicResource InputBrush}"/>
+                <Setter Property="BorderBrush" Value="{DynamicResource BorderSoftBrush}"/>
+                <Setter Property="materialDesign:TextFieldAssist.TextFieldCornerRadius" Value="14"/>
+                <Setter Property="Height" Value="52"/>
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+            </Style>
+
+            <Style x:Key="PrimaryButton" TargetType="Button" BasedOn="{StaticResource MaterialDesignRaisedButton}">
+                <Setter Property="Background" Value="{DynamicResource AccentBrush}"/>
+                <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+                <Setter Property="Foreground" Value="White"/>
+                <Setter Property="FontWeight" Value="SemiBold"/>
+                <Setter Property="materialDesign:ButtonAssist.CornerRadius" Value="14"/>
+                <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="{DynamicResource AccentDarkBrush}"/>
+                        <Setter Property="BorderBrush" Value="{DynamicResource AccentDarkBrush}"/>
+                    </Trigger>
+                    <Trigger Property="IsEnabled" Value="False">
+                        <Setter Property="Opacity" Value="0.42"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+
+            <Style x:Key="SecondaryButton" TargetType="Button" BasedOn="{StaticResource MaterialDesignOutlinedButton}">
+                <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
+                <Setter Property="BorderBrush" Value="{DynamicResource BorderSoftBrush}"/>
+                <Setter Property="Background" Value="{DynamicResource CardBrush}"/>
+                <Setter Property="FontWeight" Value="SemiBold"/>
+                <Setter Property="materialDesign:ButtonAssist.CornerRadius" Value="14"/>
+                <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            </Style>
+
+            <Style x:Key="IconButton" TargetType="Button" BasedOn="{StaticResource MaterialDesignIconForegroundButton}">
+                <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}"/>
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="Width" Value="44"/>
+                <Setter Property="Height" Value="44"/>
+                <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            </Style>
+
+            <Style x:Key="HistoryItem" TargetType="Border">
+                <Setter Property="Background" Value="{DynamicResource CardSubtleBrush}"/>
+                <Setter Property="CornerRadius" Value="14"/>
+                <Setter Property="Padding" Value="12"/>
+                <Setter Property="Margin" Value="0,0,0,8"/>
+                <Setter Property="BorderBrush" Value="{DynamicResource BorderSoftBrush}"/>
+                <Setter Property="BorderThickness" Value="1"/>
+            </Style>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Grid Background="{DynamicResource AppBackgroundBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="72"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Minimal application bar -->
+        <Border Grid.Row="0"
+                Background="{DynamicResource CardBrush}"
+                BorderBrush="{DynamicResource BorderSoftBrush}"
+                BorderThickness="0,0,0,1"
+                Padding="30,0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <Border Width="38" Height="38" CornerRadius="12" Background="{DynamicResource AccentBrush}">
+                        <materialDesign:PackIcon Kind="Youtube" Width="22" Height="22" Foreground="White"
+                                                 HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <StackPanel Margin="12,0,0,0" VerticalAlignment="Center">
+                        <TextBlock Text="YouTube Downloader" FontSize="17" FontWeight="Bold"
+                                   Foreground="{DynamicResource TextPrimaryBrush}"/>
+                        <TextBlock Text="Fast, simple, distraction-free" FontSize="11"
+                                   Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1,0,0"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <Border Grid.Column="1" Background="{DynamicResource CardSubtleBrush}"
+                        BorderBrush="{DynamicResource BorderSoftBrush}" BorderThickness="1"
+                        CornerRadius="14" Padding="10,6">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <materialDesign:PackIcon Kind="WeatherSunny" Width="16" Height="16"
+                                                 Foreground="{DynamicResource TextSecondaryBrush}" VerticalAlignment="Center"/>
+                        <ToggleButton Margin="8,0" Style="{StaticResource MaterialDesignSwitchToggleButton}"
+                                      FocusVisualStyle="{x:Null}" IsChecked="{Binding IsDarkTheme}"
+                                      ToolTip="Ganti tema terang / gelap"/>
+                        <materialDesign:PackIcon Kind="WeatherNight" Width="16" Height="16"
+                                                 Foreground="{DynamicResource TextSecondaryBrush}" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Border>
+
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <Grid MaxWidth="1120" Margin="30,28,30,34" HorizontalAlignment="Center">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="20"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="20"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Hero / URL action -->
+                <Border Grid.Row="0" Background="{DynamicResource CardBrush}" CornerRadius="24"
+                        BorderBrush="{DynamicResource BorderSoftBrush}" BorderThickness="1" Padding="28">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="20"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <Grid Grid.Row="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock Text="DOWNLOAD FROM YOUTUBE" Style="{StaticResource Eyebrow}"/>
+                                <TextBlock Text="Simpan video favoritmu." FontSize="27" FontWeight="Bold"
+                                           Foreground="{DynamicResource TextPrimaryBrush}" Margin="0,4,0,0"/>
+                                <TextBlock Text="Tempel link, ambil informasinya, pilih kualitas, lalu download."
+                                           FontSize="13" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,5,0,0"/>
+                            </StackPanel>
+                            <Border Grid.Column="1" Width="54" Height="54" CornerRadius="17"
+                                    Background="{DynamicResource AccentSoftBrush}" VerticalAlignment="Center">
+                                <materialDesign:PackIcon Kind="Download" Width="25" Height="25"
+                                                         Foreground="{DynamicResource AccentBrush}"
+                                                         HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                        </Grid>
+
+                        <Grid Grid.Row="2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBox Grid.Column="0" Text="{Binding Url, UpdateSourceTrigger=PropertyChanged}"
+                                     materialDesign:HintAssist.Hint="https://youtube.com/watch?v=..."
+                                     materialDesign:TextFieldAssist.LeadingIcon="LinkVariant"
+                                     Style="{StaticResource SoftTextBox}"
+                                     IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBooleanConverter}}"/>
+                            <Button Grid.Column="1" Style="{StaticResource IconButton}" Command="{Binding PasteUrlCommand}"
+                                    Margin="8,0,0,0" ToolTip="Tempel URL dari clipboard">
+                                <materialDesign:PackIcon Kind="ContentPaste" Width="20" Height="20"/>
+                            </Button>
+                            <Button Grid.Column="2" Content="Ambil Info" Command="{Binding FetchInfoCommand}"
+                                    Style="{StaticResource PrimaryButton}" Height="52" Width="142" Margin="8,0,0,0">
+                                <Button.ContentTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                            <materialDesign:PackIcon Kind="Magnify" Width="18" Height="18" Margin="0,0,8,0"/>
+                                            <TextBlock Text="{Binding}" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </Button.ContentTemplate>
+                            </Button>
+                        </Grid>
+                    </Grid>
+                </Border>
+
+                <!-- Workspace -->
+                <Grid Grid.Row="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2.1*"/>
+                        <ColumnDefinition Width="20"/>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Left: preview + options -->
+                    <StackPanel Grid.Column="0">
+                        <Border Style="{StaticResource Card}" MinHeight="210" Padding="22">
+                            <Grid>
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center"
+                                            Visibility="{Binding HasVideoInfo, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Invert}">
+                                    <Border Width="54" Height="54" CornerRadius="18" Background="{DynamicResource CardSubtleBrush}"
+                                            HorizontalAlignment="Center">
+                                        <materialDesign:PackIcon Kind="Youtube" Width="28" Height="28"
+                                                                 Foreground="{DynamicResource TextTertiaryBrush}"
+                                                                 HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                    <TextBlock Text="Video preview" FontSize="15" FontWeight="SemiBold"
+                                               Foreground="{DynamicResource TextPrimaryBrush}" HorizontalAlignment="Center" Margin="0,12,0,0"/>
+                                    <TextBlock Text="Detail video akan muncul setelah URL diproses."
+                                               FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}"
+                                               HorizontalAlignment="Center" Margin="0,4,0,0"/>
+                                </StackPanel>
+
+                                <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}" IsIndeterminate="True"
+                                             Width="34" Height="34" Visibility="{Binding IsFetching, Converter={StaticResource BoolToVisibilityConverter}}"/>
+
+                                <Grid Visibility="{Binding HasVideoInfo, Converter={StaticResource BoolToVisibilityConverter}}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="250"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Border Grid.Column="0" Width="250" Height="140" CornerRadius="16"
+                                            Background="{DynamicResource ThumbnailBackgroundBrush}" ClipToBounds="True"
+                                            VerticalAlignment="Center">
+                                        <Image Source="{Binding ThumbnailUrl}" Stretch="UniformToFill"/>
+                                    </Border>
+                                    <StackPanel Grid.Column="1" Margin="20,0,0,0" VerticalAlignment="Center">
+                                        <Border Background="{DynamicResource AccentSoftBrush}" CornerRadius="8"
+                                                Padding="8,4" HorizontalAlignment="Left">
+                                            <TextBlock Text="VIDEO READY" FontSize="10" FontWeight="Bold"
+                                                       Foreground="{DynamicResource AccentBrush}"/>
+                                        </Border>
+                                        <TextBlock Text="{Binding VideoTitle}" FontSize="19" FontWeight="Bold"
+                                                   Foreground="{DynamicResource TextPrimaryBrush}" Margin="0,10,0,0"
+                                                   TextTrimming="CharacterEllipsis" MaxHeight="52" TextWrapping="Wrap"/>
+                                        <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                                            <materialDesign:PackIcon Kind="AccountCircleOutline" Width="16" Height="16"
+                                                                     Foreground="{DynamicResource TextSecondaryBrush}"/>
+                                            <TextBlock Text="{Binding VideoAuthor}" FontSize="12"
+                                                       Foreground="{DynamicResource TextSecondaryBrush}" Margin="6,0,18,0"/>
+                                            <materialDesign:PackIcon Kind="ClockOutline" Width="16" Height="16"
+                                                                     Foreground="{DynamicResource TextSecondaryBrush}"/>
+                                            <TextBlock Text="{Binding VideoDuration}" FontSize="12"
+                                                       Foreground="{DynamicResource TextSecondaryBrush}" Margin="6,0,0,0"/>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Grid>
+                            </Grid>
+                        </Border>
+
+                        <Border Style="{StaticResource Card}" Margin="0,20,0,0">
+                            <StackPanel>
+                                <Grid>
+                                    <StackPanel>
+                                        <TextBlock Text="DOWNLOAD SETTINGS" Style="{StaticResource Eyebrow}"/>
+                                        <TextBlock Text="Atur kualitas &amp; lokasi" FontSize="18" FontWeight="Bold"
+                                                   Foreground="{DynamicResource TextPrimaryBrush}" Margin="0,4,0,0"/>
+                                    </StackPanel>
+                                    <Border HorizontalAlignment="Right" Background="{DynamicResource CardSubtleBrush}"
+                                            CornerRadius="10" Padding="9,5">
+                                        <TextBlock Text="MP4 / M4A / MP3" FontSize="10" FontWeight="SemiBold"
+                                                   Foreground="{DynamicResource TextSecondaryBrush}"/>
+                                    </Border>
+                                </Grid>
+
+                                <TextBlock Text="FORMAT &amp; KUALITAS" Style="{StaticResource Eyebrow}" Margin="0,20,0,7"/>
+                                <ComboBox ItemsSource="{Binding FormatOptions}" SelectedItem="{Binding SelectedFormat}"
+                                          Style="{StaticResource SoftComboBox}" materialDesign:HintAssist.Hint="Pilih format setelah Ambil Info">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate DataType="{x:Type local:FormatOption}">
+                                            <Grid Margin="0,4">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <materialDesign:PackIcon Kind="{Binding IconKind}" Width="17" Height="17"
+                                                                         Foreground="{DynamicResource AccentBrush}" VerticalAlignment="Center"/>
+                                                <TextBlock Grid.Column="1" Text="{Binding DisplayName}" Margin="9,0,0,0"
+                                                           VerticalAlignment="Center" Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                                <TextBlock Grid.Column="2" Text="{Binding SizeLabel}" FontSize="11"
+                                                           Foreground="{DynamicResource TextSecondaryBrush}" VerticalAlignment="Center"/>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+
+                                <TextBlock Text="FOLDER PENYIMPANAN" Style="{StaticResource Eyebrow}" Margin="0,18,0,7"/>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox Grid.Column="0" Text="{Binding SelectedFolder}" IsReadOnly="True"
+                                             Style="{StaticResource SoftTextBox}" materialDesign:TextFieldAssist.LeadingIcon="FolderOutline"/>
+                                    <Button Grid.Column="1" Style="{StaticResource SecondaryButton}" Command="{Binding BrowseFolderCommand}"
+                                            Height="52" Width="52" Margin="8,0,0,0" ToolTip="Pilih folder">
+                                        <materialDesign:PackIcon Kind="FolderOpenOutline" Width="20" Height="20"/>
+                                    </Button>
+                                </Grid>
+
+                                <Button Command="{Binding DownloadCommand}" Style="{StaticResource PrimaryButton}"
+                                        Height="58" Margin="0,20,0,0">
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                        <materialDesign:PackIcon Width="22" Height="22" Margin="0,0,9,0">
+                                            <materialDesign:PackIcon.Style>
+                                                <Style TargetType="materialDesign:PackIcon">
+                                                    <Setter Property="Kind" Value="TrayArrowDown"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsDownloading}" Value="True">
+                                                            <Setter Property="Kind" Value="Loading"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </materialDesign:PackIcon.Style>
+                                        </materialDesign:PackIcon>
+                                        <TextBlock FontWeight="Bold" FontSize="14">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Text" Value="Download video"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsDownloading}" Value="True">
+                                                            <Setter Property="Text" Value="Sedang mengunduh..."/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Style="{StaticResource Card}" Margin="0,20,0,0" Padding="20,16"
+                                Visibility="{Binding IsDownloading, Converter={StaticResource BoolToVisibilityConverter}}">
+                            <StackPanel>
+                                <Grid>
+                                    <TextBlock Text="DOWNLOAD PROGRESS" Style="{StaticResource Eyebrow}"/>
+                                    <TextBlock Grid.Column="1" Text="{Binding Progress, StringFormat={}{0:0}%}"
+                                               HorizontalAlignment="Right" FontWeight="Bold" Foreground="{DynamicResource AccentBrush}"/>
+                                </Grid>
+                                <ProgressBar Value="{Binding Progress, Mode=OneWay}" Height="8" Minimum="0" Maximum="100"
+                                             Margin="0,10,0,0" Style="{StaticResource MaterialDesignLinearProgressBar}"
+                                             Foreground="{DynamicResource AccentBrush}"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+
+                    <!-- Right: history / activity -->
+                    <Border Grid.Column="2" Style="{StaticResource Card}" Padding="20" MinHeight="500">
+                        <DockPanel>
+                            <Grid DockPanel.Dock="Top" Margin="0,0,0,18">
+                                <StackPanel>
+                                    <TextBlock Text="RECENT ACTIVITY" Style="{StaticResource Eyebrow}"/>
+                                    <TextBlock Text="Riwayat download" FontSize="18" FontWeight="Bold"
+                                               Foreground="{DynamicResource TextPrimaryBrush}" Margin="0,4,0,0"/>
+                                </StackPanel>
+                                <Border HorizontalAlignment="Right" Width="38" Height="38" CornerRadius="12"
+                                        Background="{DynamicResource AccentSoftBrush}">
+                                    <materialDesign:PackIcon Kind="History" Width="19" Height="19"
+                                                             Foreground="{DynamicResource AccentBrush}"
+                                                             HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                            </Grid>
+
+                            <StackPanel Visibility="{Binding History.Count, Converter={StaticResource CountToVisibilityConverter}, ConverterParameter=Invert}">
+                                <Border Width="58" Height="58" CornerRadius="18" Background="{DynamicResource CardSubtleBrush}"
+                                        HorizontalAlignment="Center" Margin="0,70,0,12">
+                                    <materialDesign:PackIcon Kind="TrayArrowDown" Width="27" Height="27"
+                                                             Foreground="{DynamicResource TextTertiaryBrush}"
+                                                             HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <TextBlock Text="Belum ada download" FontSize="14" FontWeight="SemiBold"
+                                           Foreground="{DynamicResource TextPrimaryBrush}" HorizontalAlignment="Center"/>
+                                <TextBlock Text="Video yang selesai akan muncul di sini."
+                                           FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}"
+                                           HorizontalAlignment="Center" TextAlignment="Center" Margin="0,5,0,0"/>
+                            </StackPanel>
+
+                            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                <ItemsControl ItemsSource="{Binding History}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate DataType="{x:Type local:DownloadHistoryItem}">
+                                            <Border Style="{StaticResource HistoryItem}">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="34"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <Border Width="30" Height="30" CornerRadius="9" Background="{DynamicResource AccentSoftBrush}">
+                                                        <materialDesign:PackIcon Kind="Check" Width="16" Height="16"
+                                                                                 Foreground="{DynamicResource AccentBrush}"
+                                                                                 HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                    </Border>
+                                                    <StackPanel Grid.Column="1" Margin="9,0,0,0">
+                                                        <TextBlock Text="{Binding Title}" FontSize="12" FontWeight="SemiBold"
+                                                                   Foreground="{DynamicResource TextPrimaryBrush}"
+                                                                   TextTrimming="CharacterEllipsis"/>
+                                                        <Grid Margin="0,5,0,0">
+                                                            <TextBlock Text="{Binding FormatLabel}" FontSize="10"
+                                                                       Foreground="{DynamicResource TextSecondaryBrush}"/>
+                                                            <TextBlock Text="{Binding TimeLabel}" FontSize="10"
+                                                                       Foreground="{DynamicResource TextTertiaryBrush}"
+                                                                       HorizontalAlignment="Right"/>
+                                                        </Grid>
+                                                    </StackPanel>
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </ScrollViewer>
+                        </DockPanel>
+                    </Border>
+                </Grid>
+
+                <!-- Status -->
+                <Border Grid.Row="4" Background="{DynamicResource CardBrush}" CornerRadius="16"
+                        BorderBrush="{DynamicResource BorderSoftBrush}" BorderThickness="1" Padding="15,11">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Border Width="30" Height="30" CornerRadius="10" Background="{DynamicResource CardSubtleBrush}">
+                            <materialDesign:PackIcon Width="16" Height="16" VerticalAlignment="Center" HorizontalAlignment="Center"
+                                                     Kind="{Binding StatusKind, Converter={StaticResource StatusKindToIconConverter}}"
+                                                     Foreground="{Binding StatusKind, Converter={StaticResource StatusKindToBrushConverter}}"/>
+                        </Border>
+                        <TextBlock Grid.Column="1" Text="{Binding StatusMessage}" TextWrapping="Wrap" VerticalAlignment="Center"
+                                   Margin="11,0,10,0" Foreground="{DynamicResource TextPrimaryBrush}" FontSize="12"/>
+                        <Button Grid.Column="2" Content="Batalkan" Command="{Binding CancelOperationCommand}"
+                                Style="{StaticResource MaterialDesignFlatButton}" Foreground="{DynamicResource AccentBrush}"
+                                FocusVisualStyle="{x:Null}" Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                        <Button Grid.Column="2" Content="Buka Folder" Command="{Binding OpenFolderCommand}"
+                                Style="{StaticResource MaterialDesignFlatButton}" Foreground="{DynamicResource AccentBrush}"
+                                FocusVisualStyle="{x:Null}" Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Invert}"/>
+                    </Grid>
+                </Border>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
+</Window>

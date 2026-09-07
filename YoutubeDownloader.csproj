@@ -1,0 +1,37 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <ApplicationIcon>youtube.ico</ApplicationIcon>
+
+    <!-- Metadata dipakai Inno Setup (AppVersion) & File Properties Windows.
+         Naikkan Version di setiap rilis; jangan biarkan angka ini diam padahal
+         installer jalan terus, nanti user tidak bisa bedakan build mana yang terpasang. -->
+    <Version>1.0.0</Version>
+    <FileVersion>1.0.0.0</FileVersion>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <Product>YouTube Downloader</Product>
+    <Company>YoutubeDownloaderMVVM</Company>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Harus "Resource" (bukan "Content") supaya bisa dipakai lewat
+         pack://application:,,,/youtube.ico di XAML (Window.Icon).
+         "Content" cuma dicopy ke folder output, tidak di-embed ke assembly,
+         makanya Window.Icon="youtube.ico" gagal resolve dan crash saat startup. -->
+    <Resource Include="youtube.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CliWrap" Version="3.10.5" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
+    <PackageReference Include="MaterialDesignThemes" Version="5.3.2" />
+    <PackageReference Include="YoutubeExplode" Version="6.6.2" />
+    <PackageReference Include="YoutubeExplode.Converter" Version="6.6.2" />
+  </ItemGroup>
+
+</Project>

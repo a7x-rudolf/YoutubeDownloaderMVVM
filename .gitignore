@@ -1,0 +1,7 @@
+bin/
+obj/
+.vs/
+*.user
+**/bin/Publish/
+installer/Output/
+installer/ffmpeg/*.exe
