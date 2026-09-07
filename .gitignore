@@ -5,3 +5,5 @@ obj/
 **/bin/Publish/
 installer/Output/
 installer/ffmpeg/*.exe
+
+*.bak
